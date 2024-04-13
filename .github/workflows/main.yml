@@ -43,6 +43,6 @@ jobs:
         gcloud run deploy bhashaxr \
           --image shivamgutgutia/bhashaxr:latest \
           --region asia-south1 \
-          --project=bhasha-xr \
+          --project=bhasa-xr \
           && gcloud run services update-traffic bhashaxr --to-latest --region=asia-south1\
           --platform managed
