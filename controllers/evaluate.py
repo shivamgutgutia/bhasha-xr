@@ -22,4 +22,4 @@ def evaluate():
     transcript = response.results[0].alternatives[0].transcript
     translatedText = t.translate(transcript,dest="en",src=request.form.get("language","en")[:2])
     return {"transcript":transcript,"confidence":response.results[0].alternatives[0].confidence
-,"translated": translatedText.text,"similarity":similarity(transcript,request.form.get("text",""))}
+,"translated": translatedText.text,"similarity":similarity(translatedText.text,request.form.get("text",""))},200

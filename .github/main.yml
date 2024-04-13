@@ -30,19 +30,19 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: shivamgutgutia/contactify:latest
+        tags: shivamgutgutia/bhashaxr:latest
 
     - name: Setup gcloud CLI
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCLOUD_AUTH }}
-        project_id: shivam-contacts-generator
+        project_id: bhasa-xr
 
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy contactify-backend \
-          --image shivamgutgutia/contactify:latest \
+        gcloud run deploy bhashaxr \
+          --image shivamgutgutia/bhashaxr:latest \
           --region asia-south1 \
-          --project=shivam-contacts-generator \
-          && gcloud run services update-traffic contactify-backend --to-latest --region=asia-south1\
+          --project=bhasha-xr \
+          && gcloud run services update-traffic bhashaxr --to-latest --region=asia-south1\
           --platform managed
