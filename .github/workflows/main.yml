@@ -24,8 +24,6 @@ jobs:
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Build and push Docker image
-              env:
-                  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
               id: docker_build
               uses: docker/build-push-action@v2
               with:
@@ -41,12 +39,13 @@ jobs:
                   project_id: bhasa-xr
 
             - name: Deploy to Cloud Run
-              env: 
-                OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}   
+              env:
+                  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
               run: |
-                gcloud run deploy bhashaxr \
-                  --image shivamgutgutia/bhashaxr:latest \
-                  --region asia-south1 \
-                  --project=bhasa-xr \
-                  && gcloud run services update-traffic bhashaxr --to-latest --region=asia-south1\
-                  --platform managed
+                  gcloud run deploy bhashaxr \
+                    --image shivamgutgutia/bhashaxr:latest \
+                    --region asia-south1 \
+                    --project=bhasa-xr \
+                    --set-env-vars OPENAI_API_KEY="${OPENAI_API_KEY}" \
+                    && gcloud run services update-traffic bhashaxr --to-latest --region=asia-south1\
+                    --platform managed
