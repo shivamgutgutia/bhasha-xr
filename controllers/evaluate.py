@@ -1,25 +1,21 @@
-from google.cloud import speech
-from flask import request
-from googletrans import Translator  
+from openai import OpenAI
+from flask import request 
 from utils import similarity 
 
 def evaluate():
-
-    client = speech.SpeechClient()
-    t = Translator(service_urls=["translate.google.co.in"])
+    client = OpenAI()
+    #t = Translator(service_urls=["translate.google.co.in"])
     audio = request.files["audio"]
-    audio_data = audio.read()
-    audio = speech.RecognitionAudio(content=audio_data)
-
-    config = speech.RecognitionConfig(
-        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        enable_automatic_punctuation=True,
-        audio_channel_count=1,
-        enable_separate_recognition_per_channel=True,
-        language_code=request.form.get("language","en-IN"),
+    audio.save("./upload/uploaded.wav")
+    file = open("./upload/uploaded.wav","rb")
+    transcript = client.audio.transcriptions.create(
+      model="whisper-1", 
+      file=file,
+      response_format="verbose_json",
     )
-    response = client.recognize(request={"config": config, "audio": audio})
-    transcript = response.results[0].alternatives[0].transcript
-    translatedText = t.translate(transcript,dest="en",src=request.form.get("language","en")[:2])
-    return {"transcript":transcript,"confidence":response.results[0].alternatives[0].confidence
-,"translated": translatedText.text,"similarity":similarity(translatedText.text,request.form.get("text",""))},200
+    translate = client.audio.translations.create(
+        model="whisper-1",
+        file=file
+    )
+    return {"transcript":transcript.text,"confidence":2.718**(transcript.segments[0]["avg_logprob"])
+,"translated": translate.text,"similarity":similarity(translate.text,request.form.get("text",""))},200
