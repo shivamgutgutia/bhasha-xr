@@ -3,6 +3,7 @@ from flask import request
 from utils import similarity 
 import numpy as np
 import scipy.io.wavfile as wav
+import json
 
 def float_to_wav(float_data, file_path, sample_rate=44100):
     # Normalize float data to the range [-1, 1]
@@ -18,7 +19,7 @@ def float_to_wav(float_data, file_path, sample_rate=44100):
 def evaluate2():
     client = OpenAI()
     #t = Translator(service_urls=["translate.google.co.in"])
-    audio = request.form.get("audio")
+    audio = json.loads(request.form.get("audio"))
     float_to_wav(audio,"./upload/uploaded.wav")
     file = open("./upload/uploaded.wav","rb")
     transcript = client.audio.transcriptions.create(
