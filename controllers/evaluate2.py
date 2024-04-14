@@ -1,7 +1,6 @@
 from openai import OpenAI
 from flask import request 
 from utils import similarity 
-import numpy as np
 import wave
 
 def float_to_wav(byte_data, file_path, sample_rate=44100):
@@ -27,5 +26,9 @@ def evaluate2():
         model="whisper-1",
         file=file
     )
-    return {"transcript":transcript.text,"confidence":2.718**(transcript.segments[0]["avg_logprob"])
-,"translated": translate.text,"similarity":similarity(translate.text,request.form.get("text",""))},200
+    return {
+        "transcript":transcript.text,
+        "confidence":2.718**(transcript.segments[0]["avg_logprob"]),
+        "translated": translate.text,
+        "similarity":similarity(translate.text,request.form.get("text",""))\
+    },200
