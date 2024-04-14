@@ -2,21 +2,21 @@ from openai import OpenAI
 from flask import request 
 from utils import similarity 
 import numpy as np
-import scipy.io.wavfile as wav
-import json
+import wave
 
 def float_to_wav(byte_data, file_path, sample_rate=44100):
     
-    with wav.Wave_write(file_path) as wf:
+    with wave.open(file_path,"wb") as wf:
         wf.setnchannels(1) 
         wf.setsampwidth(2) 
         wf.setframerate(sample_rate)
-        wf.writeframes(byte_data)
+        wf.writeframes(byte_data.encode())
 
 def evaluate2():
     client = OpenAI()
-    audio = json.loads(request.form.get("audio"))
-    float_to_wav(audio,"./upload/uploaded.wav")
+    audio = request.form.get("audio")
+    print(audio)
+    float_to_wav(byte_data=audio,file_path="upload/uploaded.wav")
     file = open("./upload/uploaded.wav","rb")
     transcript = client.audio.transcriptions.create(
       model="whisper-1", 
